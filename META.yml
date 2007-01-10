@@ -1,6 +1,6 @@
 --- #YAML:1.0
 name:                Business-ISBN-Data
-version:             1.12
+version:             1.13
 abstract:            ~
 license:             perl
 generated_by:        ExtUtils::MakeMaker version 6.31
