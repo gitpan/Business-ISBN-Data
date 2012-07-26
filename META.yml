@@ -1,6 +1,6 @@
 --- #YAML:1.0
 name:               Business-ISBN-Data
-version:            20120719
+version:            20120719.001
 abstract:           Data pack for Business::ISBN
 author:
     - brian d foy <bdfoy@cpan.org>
@@ -11,7 +11,10 @@ configure_requires:
 build_requires:
     ExtUtils::MakeMaker:  0
 requires:
-    Test::More:  0
+    Carp:                 0
+    File::Basename:       0
+    File::Spec::Functions:  0
+    Test::More:           0.95
 no_index:
     directory:
         - t
