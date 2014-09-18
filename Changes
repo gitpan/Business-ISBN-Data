@@ -1,10 +1,14 @@
+
+20140910.001 - Thu Sep 18 06:46:01 2014
+	* Update to the latest data (2014-09-10)
+
+20120719.01 - Thu Jul 26 08:57:14 2012
+	Specify the Test::More version so I can use subtest.
+	No code or feature changes
+
 20120719 - Mon Jul 23 18:02:31 2012
 	* Support data from RangeMessage.xml. You can use the latest
 	data from ISBN without updating this module.
-
-20120719.01 - Thu Jul 26 08:57:14 2012
-	Specify the Test::More version so I cna use subtest.
-	No code or feature changes
 
 20120718 - Mon Jul 23 12:59:52 2012
 	* Daniel Jakubik updated the data for July 18, 2012

@@ -6,10 +6,12 @@ LICENSE
 make_data.pl
 Makefile.PL
 MANIFEST			This list of files
+MANIFEST.SKIP
 README
 t/check_data_structure.t
 t/load.t
 t/pod.t
 t/pod_coverage.t
 t/test_manifest
-META.yml                                 Module meta-data (added by MakeMaker)
+META.yml                                 Module YAML meta-data (added by MakeMaker)
+META.json                                Module JSON meta-data (added by MakeMaker)
