@@ -6,7 +6,7 @@ use Carp qw(carp);
 use File::Basename qw(dirname);
 use File::Spec::Functions qw(catfile);
 
-$VERSION = '20140910.001';
+$VERSION = '20140910.002';
 
 =head1 NAME
 
@@ -34,7 +34,8 @@ an update to this module.
 
 If the default F<RangeMessage.xml> or your alternate one is not available,
 the module falls back to data included in F<Data.pm>. However, that data
-is likely to be older data.
+is likely to be older data. If it does not find that file, it looks
+for F<RangeMessage.xml> in the current directory.
 
 The data are in C<%Business::ISBN::country_data> (although the "country"
 part is historical). If you want to see where the data are from, check
@@ -57,6 +58,9 @@ Yakov Shafranovich updated the data in October 2008.
 
 Daniel Jakubik updated the data in July 2012.
 
+Markus Spann suggested looking for F<RangeMessage.xml> in the current
+directory to make it work with Perl app bundlers.
+
 =head1 COPYRIGHT AND LICENSE
 
 Copyright (c) 2002-2014, brian d foy, All Rights Reserved.
@@ -68,6 +72,7 @@ You may redistribute this under the same terms as Perl itself.
 sub _default_data {
 	(
 	_source => __FILE__,
+	_data_date => '20140910',
 	0     => [ 'English language' => [ '00' => '19', '200' => '699', '7000' => '8499', '85000' => '89999', '900000' => '949999', '9500000' => '9999999'] ],
 	1     => [ 'English language' => [ '00' => '09', '100' => '329', '330' => '399', '4000' => '5499', '55000' => '86979', '869800' => '998999', '9990000' => '9999999'] ],
 	2     => [ 'French language' => [ '00' => '19', '200' => '349', '35000' => '39999', '400' => '699', '7000' => '8399', '84000' => '89999', '900000' => '949999', '9500000' => '9999999'] ],
@@ -300,15 +305,18 @@ sub _get_data {
 # eventually fetch this from the internet
 # http://www.isbn-international.org/agency?rmxml=1
 
-	my $file = do {
-		no warnings 'uninitialized';
-		   if( -e $ENV{ISBN_RANGE_MESSAGE} ) { $ENV{ISBN_RANGE_MESSAGE} }
-		else {
-			my $default = catfile( dirname( __FILE__ ), 'RangeMessage.xml' );
-			}
-		};
+	if( defined $ENV{ISBN_RANGE_MESSAGE} and ! -e $ENV{ISBN_RANGE_MESSAGE} ) {
+		carp "ISBN_RANGE_MESSAGE is set to [$ENV{ISBN_RANGE_MESSAGE}] but that file does not exist!\nTrying to use the default locations\n";
+		}
+	my $file = 'RangeMessage.xml';
+	no warnings 'uninitialized';
+	my @candidates = grep { -e } (
+		$ENV{ISBN_RANGE_MESSAGE},              # env
+		catfile( dirname( __FILE__ ), $file ), # next to the module
+		$file,                                 # current directory
+		);
 
-	my $hash = _parse_range_message( $file );
+	my $hash = _parse_range_message( $candidates[0] );
 
 	if( defined $hash ) { return %$hash   }
 	else                { _default_data() }
@@ -318,7 +326,7 @@ sub _parse_range_message {
 	my( $file ) = @_;
 
 	open my $fh, '<:utf8', $file or do {
-		carp "Could not open $file to get ISBN range data [$!]";
+		carp "Could not open $file to get ISBN range data [$!]\n";
 		return
 		};
 
